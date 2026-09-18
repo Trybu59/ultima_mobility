@@ -31,12 +31,12 @@
 <body>
   <div id="iframeContainer">
     <div id="loader" class="iconify"></div>
-    <iframe id="bubbleIframe" frameborder="0" allowfullscreen></iframe>
+    <iframe id="trybuIframe" frameborder="0" allowfullscreen allow="geolocation"></iframe>
   </div>
 
   <script>
     window.addEventListener('load', function() {
-      var iframe = document.getElementById('bubbleIframe');
+      var iframe = document.getElementById('trybuIframe');
       var loader = document.getElementById('loader');
 
       // Définir la couleur principale
@@ -71,11 +71,11 @@
         return urlParams.get(name);
       }
 
-      // Récupérer le paramètre "product" de l'URL de la page
+      // Récupérer le paramètre "product" de l'URL de la page (toujours supporté par le widget Trÿbu)
       var productParam = getQueryParam('product');
 
       // Construire l'URL de l'iframe en ajoutant le paramètre "product" si présent
-      var iframeUrl = 'https://app.trybu.io/ultima_mobility?lang=fr_fr';
+      var iframeUrl = 'https://console.trybu.io/widget?brand=9650625f-1d06-47ba-b6b9-59fcb9c07ea0&lang=fr';
       if (productParam) {
         iframeUrl += '&product=' + encodeURIComponent(productParam);
       }
@@ -87,21 +87,9 @@
         loader.style.display = 'none';
       }
 
+      // Masque le loader dès que l'iframe a fini de charger (garde-fou à 3s au cas où)
+      iframe.addEventListener('load', hideLoader);
       setTimeout(hideLoader, 3000);
-
-      window.addEventListener('message', function(event) {
-        if (event.origin !== 'https://app.trybu.io') {
-          return;
-        }
-
-        if (event.data === 'bubbleContentLoaded') {
-          hideLoader();
-        }
-      });
-
-      iframe.addEventListener('load', function() {
-        iframe.contentWindow.postMessage('bubbleContentLoadedRequest', '*');
-      });
     });
   </script>
 </body>
